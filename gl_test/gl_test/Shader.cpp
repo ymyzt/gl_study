@@ -5,22 +5,29 @@ using namespace std;
 GLuint Shader::CreateShader(const char * fileName, GLenum shadertype)
 {
 	fstream f;
-	f.open(fileName, ios::in|ios::ate);
+	f.open(fileName, ios::in);
 	if (!f.is_open())
 	{
 		cout << "open file fail!!" << endl;
 		//exit(0);
 	}
-	int size = f.tellg();
-	cout<< "fileName:"<<fileName<<"  size:" <<size << endl;
+	//int size = f.tellg();
+	//cout<< "fileName:"<<fileName<<"  size:" <<size << endl;
 	f.seekg(0, ios::beg);
-	char *buffer = new char [size+1];
-	f.read(buffer, size);
-	buffer[size] = '\0';
+	char *buffer = new char [1024];
+	string str;
+	while (!f.eof())
+	{
+		f.getline(buffer, 1024);
+		str.append(buffer);
+		str.append(1, '\n');
+	}
+	//buffer[size] = '\0';
 	f.close();
-	//cout << "buffer  :"<< buffer << endl;
+	const char * buf = str.c_str();
+	cout << "str  :"<< str.c_str() << endl;
 	GLuint  shid = glCreateShader(shadertype);
-	glShaderSource(shid, 1, &buffer, NULL);
+	glShaderSource(shid, 1,&buf, NULL);
 	glCompileShader(shid);
 	GLint success;
 	glGetShaderiv(shid, GL_COMPILE_STATUS, &success);
@@ -71,20 +78,52 @@ void Shader::Use()
 {
 	glUseProgram(shaderid);
 }
-void Shader::setFloatToUnifrom(const char *key, float value)
+void Shader::setFloatToUnifrom(const char *key,int n ,float * value)//n :1~4
 {
 	GLint addr = glGetUniformLocation(shaderid, key);
-	glUniform1f(addr, value);
+	switch (n)
+	{
+	case 1:
+		glUniform1f(addr, value[0]);
+		break;
+	case 2:
+		glUniform2f(addr, value[0], value[1]);
+		break;
+	case 3:
+		glUniform3f(addr, value[0], value[1],value[2]);
+		break;
+	case 4:
+		glUniform4f(addr, value[0], value[1],value[2],value[3]);
+		break;
+	default:
+		cout << "n(1~4) count err!" << endl;
+	}
 }
 void Shader::setMaT4ToUnifrom(const char *key, glm::mat4 trans)
 {
 	GLint addr = glGetUniformLocation(shaderid, key);
 	glUniformMatrix4fv(addr, 1, GL_FALSE, glm::value_ptr(trans));
 }
-void Shader::setIntToUnifrom(const char *key, int value)
+void Shader::setIntToUnifrom(const char *key, int n,int *value)
 {
 	GLint addr = glGetUniformLocation(shaderid, key);
-	glUniform1i(addr, value);
+	switch (n)
+	{
+	case 1:
+		glUniform1i(addr, value[0]);
+		break;
+	case 2:
+		glUniform2i(addr, value[0], value[1]);
+		break;
+	case 3:
+		glUniform3i(addr, value[0], value[1], value[2]);
+		break;
+	case 4:
+		glUniform4i(addr, value[0], value[1], value[2], value[3]);
+		break;
+	default:
+		cout << "n(1~4) count err!" << endl;
+	}
 }
 Shader::~Shader()
 {

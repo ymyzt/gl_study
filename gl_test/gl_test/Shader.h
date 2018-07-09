@@ -19,8 +19,8 @@ public:
 	Shader(const char * vshaderpath,const char * fshaderpath);
 	GLuint getShaderID();
 	void Use();
-	void setFloatToUnifrom(const char *,float);
-	void setIntToUnifrom(const char *, int);
+	void setFloatToUnifrom(const char *,int,float *);
+	void setIntToUnifrom(const char *,int, int *);
 	void setMaT4ToUnifrom(const char *, glm::mat4 );
 	int  LinkProgram();
 	~Shader();
