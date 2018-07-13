@@ -1,6 +1,6 @@
 #version  330  core
 out vec4 Fcolor;
-in vec4 vFcolor;
+//in vec4 vFcolor;
 in vec2 outtextrue;
 uniform sampler2D ourTexture1; 
 uniform sampler2D ourTexture2; 
